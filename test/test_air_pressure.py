@@ -15,6 +15,7 @@ SPI_MAX_SPEED_HZ = 1_000_000
 SPI_MODE = 0
 DEFAULT_VREF = 3.3
 DEFAULT_FRAME = "3byte"
+INPUT_DIVIDER_RATIO = 0.6
 
 SENSOR_ZERO_PSI_VOLTS = 0.5
 SENSOR_FULL_SCALE_VOLTS = 4.5
@@ -72,6 +73,10 @@ def volts_to_psi(volts: float) -> float:
     return (volts - SENSOR_ZERO_PSI_VOLTS) * SENSOR_FULL_SCALE_PSI / span
 
 
+def ch0_to_vin(ch0_volts: float) -> float:
+    return ch0_volts / INPUT_DIVIDER_RATIO
+
+
 def pressure_status(volts: float) -> str:
     if volts < SENSOR_ZERO_PSI_VOLTS:
         return "below_sensor_range"
@@ -115,16 +120,18 @@ def main() -> int:
                 raw = read_mcp3002(spi, MCP3002_CHANNEL, args.frame)
                 response = []
 
-            volts = raw * args.vref / 1023.0
-            psi = volts_to_psi(volts)
-            status = pressure_status(volts)
+            ch0_volts = raw * args.vref / 1023.0
+            vin = ch0_to_vin(ch0_volts)
+            psi = volts_to_psi(vin)
+            status = pressure_status(vin)
             response_text = ""
             if response:
                 response_text = " response=" + ",".join(f"0x{byte:02x}" for byte in response)
 
             print(
                 f"sample={index} channel={MCP3002_CHANNEL} raw={raw} "
-                f"volts={volts:.6f} psi={psi:.3f} status={status}{response_text}"
+                f"CH0={ch0_volts:.6f} Vin={vin:.6f} psi={psi:.3f} "
+                f"status={status}{response_text}"
             )
 
             if index != args.samples - 1:
