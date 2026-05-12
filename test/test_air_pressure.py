@@ -49,7 +49,7 @@ def read_mcp3002(spi, channel: int, frame: str) -> int:
         return ((response[0] & 0x03) << 8) | response[1]
 
     response = spi.xfer2([0x01, (0x02 + channel) << 6, 0x00])
-    return ((response[1] & 0x1F) << 6) | (response[2] >> 2)
+    return ((response[1] & 0x0F) << 6) | (response[2] >> 2)
 
 
 def read_mcp3002_debug(spi, channel: int, frame: str) -> tuple[int, list[int]]:
@@ -63,7 +63,7 @@ def read_mcp3002_debug(spi, channel: int, frame: str) -> tuple[int, list[int]]:
         return raw, response
 
     response = spi.xfer2([0x01, (0x02 + channel) << 6, 0x00])
-    raw = ((response[1] & 0x1F) << 6) | (response[2] >> 2)
+    raw = ((response[1] & 0x0F) << 6) | (response[2] >> 2)
 
     return raw, response
 

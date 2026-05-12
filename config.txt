@@ -62,6 +62,8 @@ dtparam=spi=on
 dtoverlay=spi0-0cs
 
 # GPIO pins
+# SPI0 MISO
+gpio=9=ip,pu
 # Torch Float
 gpio=12=ip,pd
 # IHS Sense
