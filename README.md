@@ -6,6 +6,8 @@
 
 Just burn Raspberry Pi OS to SD card with Raspberry Pi Imager. 
 
+then copy spi0-4cs.dts to /home/operator
+
 ### On Raspberry Pi OS
 
 #### Install realtime kernel
@@ -22,6 +24,27 @@ After reboot, confirm that RT kernel is running
 
 ```bash
 uname -a | grep PREEMPT_RT
+```
+
+#### Install libgpiod
+
+```bash
+sudo apt install libgpiod-dev gpiod
+```
+
+#### Configure SPI
+
+```bash
+sudo apt install device-tree-compiler
+dtc -@ -I dts -O dtb \
+  -o /boot/firmware/overlays/spi0-4cs.dtbo \
+  spi0-4cs.dts
+
+sudo tee -a /boot/firmware/config.txt <<"EOF"
+dtparam=spi=on
+dtoverlay=spi0-4cs,cs0_pin=8,cs1_pin=7,cs2_pin=19,cs3_pin=1
+EOF
+sudo reboot
 ```
 
 #### Configure RTC
