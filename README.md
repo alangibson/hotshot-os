@@ -36,9 +36,9 @@ sudo apt install libgpiod-dev gpiod
 
 ```bash
 sudo apt install device-tree-compiler
-dtc -@ -I dts -O dtb \
-  -o /boot/firmware/overlays/spi0-4cs.dtbo \
-  spi0-4cs.dts
+sudo dtc -@ -I dts -O dtb \
+  -o /boot/firmware/overlays/spi0-6cs.dtbo \
+  spi0-6cs.dts
 
 sudo tee -a /boot/firmware/config.txt <<"EOF"
 dtparam=spi=on

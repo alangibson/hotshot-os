@@ -58,7 +58,7 @@ dtoverlay=i2c-rtc,ds1307
 
 # SPI
 dtparam=spi=on
-dtoverlay=spi0-4cs,cs0_pin=8,cs1_pin=7,cs2_pin=19,cs3_pin=1
+dtoverlay=spi0-6cs,cs0_pin=8,cs1_pin=7,cs2_pin=19,cs3_pin=1,cs4_pin=22,cs5_pin=23
 
 # GPIO pins
 # SPI0 MISO
