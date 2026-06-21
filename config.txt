@@ -64,18 +64,18 @@ dtoverlay=spi0-6cs,cs0_pin=8,cs1_pin=7,cs2_pin=19,cs3_pin=1,cs4_pin=22,cs5_pin=2
 # SPI0 MISO
 gpio=9=ip,pu
 # Torch Float
-gpio=12=ip,pd
+gpio=12=ip,pu
 # IHS Sense
 gpio=14=ip,pd
 # IHS Enable
 gpio=15=op,dl
 # Estop
-gpio=16=ip,pd
+gpio=16=ip,pu
 # Torch Fire
 gpio=20=op,dl
 # Torch Laser
 gpio=21=op,dl
 # Arc OK
-gpio=26=ip,pd
+gpio=26=ip,pu
 
 force_turbo=1
