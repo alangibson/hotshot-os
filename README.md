@@ -6,7 +6,7 @@
 
 Just burn Raspberry Pi OS to SD card with Raspberry Pi Imager. 
 
-then copy spi0-4cs.dts to /home/operator
+then copy this directory to `/home/operator/hotshot-os` on the Raspberry Pi.
 
 ### On Raspberry Pi OS
 
@@ -32,20 +32,25 @@ uname -a | grep PREEMPT_RT
 sudo apt install libgpiod-dev gpiod
 ```
 
-#### Configure SPI
+#### Install boot overlays and config
 
 ```bash
 sudo apt install device-tree-compiler
-sudo dtc -@ -I dts -O dtb \
-  -o /boot/firmware/overlays/spi0-6cs.dtbo \
-  spi0-6cs.dts
-
-sudo tee -a /boot/firmware/config.txt <<"EOF"
-dtparam=spi=on
-dtoverlay=spi0-4cs,cs0_pin=8,cs1_pin=7,cs2_pin=19,cs3_pin=1
-EOF
+cd /home/operator/hotshot-os
+./install.sh
 sudo reboot
 ```
+
+`install.sh` installs the build dependencies, builds and installs `spi0-7cs.dts` and `mcp23s17-spi0-6.dts`, installs `config.txt`, patches and rebuilds the MCP23S17 SPI kernel module, and refreshes the boot initramfs. GPIO0 is used as the CS6 chip-select pin for the MCP23S17 on `spi0.6`.
+
+After reboot, confirm the MCP23S17 is bound:
+
+```bash
+dmesg | grep -Ei 'mcp23|spi0.6|deferred'
+gpioinfo
+```
+
+The kernel may log `Fixed dependency cycle(s)` for the MCP23S17 `pullups` pinctrl node. That line is expected when the MCP23S17 GPIO chip and its pinctrl pull-up configuration reference each other. The failure cases to investigate are `deferred probe pending`, `can't add GPIO chip`, or `missing spi-present-mask`.
 
 #### Configure RTC
 

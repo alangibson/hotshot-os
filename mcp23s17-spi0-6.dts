@@ -1,0 +1,36 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2835";
+
+	fragment@0 {
+		target = <&spi0>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+
+			mcp23s17: mcp23s17@6 {
+				compatible = "microchip,mcp23s17";
+				reg = <6>;
+				gpio-controller;
+				#gpio-cells = <2>;
+				/* MCP23S17 hardware address 0 is present on SPI0 CS6. */
+				microchip,spi-present-mask = /bits/ 8 <0x01>;
+				spi-max-frequency = <1000>;
+				pinctrl-names = "default";
+				pinctrl-0 = <&mcp23s17_pullups>;
+				status = "okay";
+
+				mcp23s17_pullups: pullups {
+					pins = "gpio0", "gpio1", "gpio2", "gpio3",
+					       "gpio4", "gpio5", "gpio6", "gpio7",
+					       "gpio8", "gpio9", "gpio10", "gpio11",
+					       "gpio12", "gpio13", "gpio14", "gpio15";
+					bias-pull-up;
+				};
+			};
+		};
+	};
+};
